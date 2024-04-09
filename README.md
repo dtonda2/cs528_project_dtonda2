@@ -2,7 +2,7 @@
 
 ## Virtual Reality Project - 2024 Project: Shining Star
 
-Welcome to the Virtual Reality Project - 2024 Project: Shining Star! This project aims to create a visually stunning simulation of stars and celestial bodies in virtual reality using Unity. The Project has been made using the Unity Cave2 Template.
+Welcome to the Virtual Reality Project - 2024 Project: Shining Star! This project aims to create a visually stunning simulation of stars and celestial bodies in virtual reality using Unity. The Project has been made using the omicron-unity CAVE2 Simulator in Unity 2019.2.11f1.
 
 ## Table of Contents
 1. [Features](#features)
