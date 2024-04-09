@@ -21,7 +21,7 @@ Getting Started
 Prerequisites
 Before you begin, ensure you have the following installed:
 
-Unity (version X.X.X)
+Unity (version 2019.2.1f1)
 VR headset (e.g., Oculus Rift, HTC Vive)
 Compatible VR controllers
 Installation
