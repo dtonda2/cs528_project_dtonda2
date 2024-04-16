@@ -1,22 +1,58 @@
-# omicron-unity CAVE2 Simulator
-A example project for developing Unity3D applications for virtual reality environments such as the Electronic Visualization Laboratory's CAVE2(TM). This package and its associated submodule (https://github.com/arthurnishimoto/module-omicron) work as a wrapper around the CAVE2 API so that the CAVE2 environment can be simulated in Unity3D using stock Unity assets (no editor platform dependencies, professional licenses needed).
+# cs528_project_dtonda2
 
-**Documentation:**
+## Virtual Reality Project - 2024 Project: Shining Star
 
-[Guide for Running Unity in CAVE2](https://github.com/uic-evl/omicron-unity/wiki/Guide-for-running-Unity-in-CAVE2)
+Welcome to the Virtual Reality Project - 2024 Project: Shining Star! This project aims to create a visually stunning simulation of stars and celestial bodies in virtual reality using Unity. The Project has been made using the omicron-unity CAVE2 Simulator in Unity 2019.2.11f1.
 
-[CAVE2 Unity Tips and Examples](https://github.com/uic-evl/omicron-unity/wiki/CAVE2-Unity-Tips-and-Examples)
+## Table of Contents
+1. [Features](#features)
+2. [Getting Started](#getting-started)
+   - [Prerequisites](#prerequisites)
+   - [Installation](#installation)
+3. [Usage](#usage)
+4. [Contributing](#contributing)
+5. [License](#license)
 
-[Guide for Running Unity in Continuum](https://github.com/uic-evl/omicron-unity/wiki/Guide-for-running-Unity-in-Continuum)
+## Features
+Realistic rendering of stars and celestial bodies.
+Interactive VR experience.
+Customizable settings for exploration.
+Smooth performance optimized for VR platforms.
+Intuitive user interface.
+## Getting Started
+### Prerequisites
+Before you begin, ensure you have the following installed:
 
-## Installation
+Unity (version 2019.2.1f1)
+VR headset (e.g., Oculus Rift, HTC Vive)
+Compatible VR controllers
+### Installation
+Clone this repository to your local machine:
 
-This repository is a wrapper for the main Omicron-Unity module available at https://github.com/arthurnishimoto/module-omicron. Download from here for use as a Unity example project. Use the previous link for use as a submodule of an existing project.
+```bash
+git clone https://github.com/dtonda2/cs528_project_dtonda2.git
+```
+Open the project in Unity.
 
-If you are cloning using Git, remember to remember to use the recursive flag:
+Connect your VR headset and ensure it's properly configured.
 
-`git clone --recursive https://github.com/uic-evl/omicron-unity.git`
+Build and run the project in Unity.
 
-Alternatively when available, you can use one of the zipped release files.
+## Usage
+Once the project is running, you can:
 
-CAVE2 is a trademark of the University of Illinois Board of Trustees
+Explore the virtual space using your VR headset and controllers.
+Interact with stars and celestial bodies by pointing and clicking.
+Adjust settings such as brightness, density, and navigation controls to customize your experience.
+
+## Contributing
+Contributions are welcome! If you'd like to contribute to this project, please follow these steps:
+
+Fork the repository.
+Create a new branch (git checkout -b feature/new-feature).
+Make your changes.
+Commit your changes (git commit -am 'Add new feature').
+Push to the branch (git push origin feature/new-feature).
+Create a new Pull Request.
+## License
+This project is licensed under the MIT License - see the LICENSE file for details.
