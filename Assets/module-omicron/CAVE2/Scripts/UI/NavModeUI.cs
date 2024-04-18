@@ -41,17 +41,18 @@ public class NavModeUI : MonoBehaviour {
     void Start () {
         navController = GetComponentInParent<CAVE2WandNavigator>();
 
-        if(navController.navMode == CAVE2WandNavigator.NavigationMode.Walk)
+        // if(navController.navMode == CAVE2WandNavigator.NavigationMode.Walk)
+        // {
+        //     walkButton.isOn = true;
+        // }
+        // else 
+        if (navController.navMode == CAVE2WandNavigator.NavigationMode.Freefly)
         {
-            walkButton.isOn = true;
+            freeflyButton.isOn = true;
         }
         else if (navController.navMode == CAVE2WandNavigator.NavigationMode.Drive)
         {
             driveButton.isOn = true;
-        }
-        else if (navController.navMode == CAVE2WandNavigator.NavigationMode.Freefly)
-        {
-            freeflyButton.isOn = true;
         }
     }
 
@@ -68,15 +69,16 @@ public class NavModeUI : MonoBehaviour {
 
         switch (navController.navMode)
         {
-            case (CAVE2WandNavigator.NavigationMode.Walk):
-                walkButton.SetIsOnWithoutNotify(true);
+            // case (CAVE2WandNavigator.NavigationMode.Walk):
+            //     walkButton.SetIsOnWithoutNotify(true);
+            //     break;
+            case (CAVE2WandNavigator.NavigationMode.Freefly):
+                freeflyButton.SetIsOnWithoutNotify(true);
                 break;
             case (CAVE2WandNavigator.NavigationMode.Drive):
                 driveButton.SetIsOnWithoutNotify(true);
                 break;
-            case (CAVE2WandNavigator.NavigationMode.Freefly):
-                freeflyButton.SetIsOnWithoutNotify(true);
-                break;
+            
         }
     }
 }

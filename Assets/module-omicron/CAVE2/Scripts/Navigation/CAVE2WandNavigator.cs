@@ -60,10 +60,10 @@ public class CAVE2WandNavigator : MonoBehaviour {
     // Walk - Analog stick movement with physics
     // Fly - 6DoF movement with no physics
     // Drive - Same as fly without pitch/roll
-    public enum NavigationMode { Disabled, Walk, Drive, Freefly }
+    public enum NavigationMode { Disabled, Drive, Freefly }
 
     [Header("Navigation Mode")]
-    public NavigationMode navMode = NavigationMode.Walk;
+    public NavigationMode navMode = NavigationMode.Freefly;
     [SerializeField] CAVE2.Button freeFlyToggleButton = CAVE2.Button.Button5;
     [SerializeField] CAVE2.Button freeFlyButton = CAVE2.Button.Button7;
     NavigationMode lastNavMode;
@@ -145,7 +145,7 @@ public class CAVE2WandNavigator : MonoBehaviour {
         if( navMode == NavigationMode.Disabled )
         {
             DisableMovement();
-            lastNavMode = NavigationMode.Walk;
+            lastNavMode = NavigationMode.Freefly;
         }
     }
 
@@ -157,10 +157,10 @@ public class CAVE2WandNavigator : MonoBehaviour {
             {
                 UpdateFreeflyMovement();
             }
-            else if (navMode == NavigationMode.Walk)
-            {
-                UpdateWalkMovement();
-            }
+            // else if (navMode == NavigationMode.Walk)
+            // {
+            //     UpdateWalkMovement();
+            // }
         }
     }
 
@@ -243,12 +243,12 @@ public class CAVE2WandNavigator : MonoBehaviour {
 
         if (CAVE2.GetButtonDown(freeFlyToggleButton, wandID))
         {
-            if (navMode == NavigationMode.Walk)
-                SetNavigationMode((int)NavigationMode.Drive);
-            else if (navMode == NavigationMode.Drive)
+            // if (navMode == NavigationMode.Walk)
+            //     SetNavigationMode((int)NavigationMode.Drive);
+            // else if (navMode == NavigationMode.Drive)
                 SetNavigationMode((int)NavigationMode.Freefly);
-            else
-                SetNavigationMode((int)NavigationMode.Walk);
+            // else
+                // SetNavigationMode((int)NavigationMode.Walk);
         }
     }
 
@@ -267,7 +267,7 @@ public class CAVE2WandNavigator : MonoBehaviour {
     {
         if (Time.timeSinceLevelLoad > 1)
         {
-            navMode = NavigationMode.Walk;
+            // navMode = NavigationMode.Walk;
 
             // Update Nav button UI state
             GetComponentInChildren<NavModeUI>().UpdateNavButtons();
