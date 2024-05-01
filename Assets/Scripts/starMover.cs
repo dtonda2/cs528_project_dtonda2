@@ -6,13 +6,13 @@ public class starMover : MonoBehaviour
 {
     public float time_elapsed;
     public float current_scale;
-    CSV_Loader CSVLoaderScript;
+    CSV_Loader csv_Loader;
     public GameObject CSVReaderObj;
     public GameObject player;
-    ConstellationLoader ConstellationLoaderScript;
-    public GameObject ConstellationLoaderObj;
-    Dictionary<int, GameObject> mstarDictionary;
-    Dictionary<int, GameObject> allstarDictionary;
+    ConstellationLoader Constellation_Loader;
+    public GameObject Constellation_Loader_obj;
+    Dictionary<int, GameObject> mStarsDict;
+    Dictionary<int, GameObject> allStarsDict;
     List<GameObject> starObjects;
     private Coroutine coroutine;
     public bool rev_time;
@@ -23,115 +23,114 @@ public class starMover : MonoBehaviour
     }
     public void scale_halve()
     {
-        CSVLoaderScript.new_scale_star_halve();
+        csv_Loader.StarHalfScaler();
         
         current_scale = current_scale/2;
 
-        int currConstellation = ConstellationLoaderScript.currConstellation;
-        if (currConstellation == 0)
+        int current_Const = Constellation_Loader.current_Const;
+        if (current_Const == 0)
         {
-            ConstellationLoaderScript.loadModernConstellation(true);
+            Constellation_Loader.loadModernConstellation(true);
         }
-        else if (currConstellation == 1)
+        else if (current_Const == 1)
         {
-            ConstellationLoaderScript.loadGreekConstellation(true);
+            Constellation_Loader.loadGreekConstellation(true);
         }
-        else if (currConstellation == 2)
+        else if (current_Const == 2)
         {
-            ConstellationLoaderScript.loadChineseConstellation(true);
+            Constellation_Loader.loadChineseConstellation(true);
         }
-        else if (currConstellation == 3)
+        else if (current_Const == 3)
         {
-            ConstellationLoaderScript.loadIndianConstellation(true);
+            Constellation_Loader.loadIndianConstellation(true);
         }
-        else if (currConstellation == 4)
+        else if (current_Const == 4)
         {
-            ConstellationLoaderScript.loadEgyptConstellation(true);
+            Constellation_Loader.loadEgyptConstellation(true);
         }
-        else if (currConstellation == 5)
+        else if (current_Const == 5)
         {
-            ConstellationLoaderScript.loadNoConstellation(true);
+            Constellation_Loader.loadNoConstellation(true);
         }
 
         
     }
     public void scale_double()
     {
-        CSVLoaderScript.new_scale_star_double();
+        csv_Loader.StarDoubleScaler();
 
         current_scale = current_scale * 2;
 
-        int currConstellation = ConstellationLoaderScript.currConstellation;
-        if (currConstellation == 0)
+        int current_Const = Constellation_Loader.current_Const;
+        if (current_Const == 0)
         {
-            ConstellationLoaderScript.loadModernConstellation(true);
+            Constellation_Loader.loadModernConstellation(true);
         }
-        else if (currConstellation == 1)
+        else if (current_Const == 1)
         {
-            ConstellationLoaderScript.loadGreekConstellation(true);
+            Constellation_Loader.loadGreekConstellation(true);
         }
-        else if (currConstellation == 2)
+        else if (current_Const == 2)
         {
-            ConstellationLoaderScript.loadChineseConstellation(true);
+            Constellation_Loader.loadChineseConstellation(true);
         }
-        else if (currConstellation == 3)
+        else if (current_Const == 3)
         {
-            ConstellationLoaderScript.loadIndianConstellation(true);
+            Constellation_Loader.loadIndianConstellation(true);
         }
-        else if (currConstellation == 4)
+        else if (current_Const == 4)
         {
-            ConstellationLoaderScript.loadEgyptConstellation(true);
+            Constellation_Loader.loadEgyptConstellation(true);
         }
-        else if (currConstellation == 5)
+        else if (current_Const == 5)
         {
-            ConstellationLoaderScript.loadNoConstellation(true);
+            Constellation_Loader.loadNoConstellation(true);
         }
 
 
     }
 
-    public void forward_10_years()
+    public void forward10K_years()
     {
         if(rev_time)
         {
-            CSVLoaderScript.jump_10k_years(-1);
+            csv_Loader.ForwardYears_10K(-1);
         }
         else
         {
-            CSVLoaderScript.jump_10k_years(1);
+            csv_Loader.ForwardYears_10K(1);
         }
         
-        mstarDictionary = CSVLoaderScript.starDictionary;
-        ConstellationLoaderScript = ConstellationLoaderObj.GetComponent<ConstellationLoader>();
-        Debug.Log("Time jumping ahead 10k years!");
+        mStarsDict = csv_Loader.StarsDict;
+        Constellation_Loader = Constellation_Loader_obj.GetComponent<ConstellationLoader>();
+        Debug.Log("Time ahead 10k years!");
         time_elapsed = time_elapsed+10000;
-
  
-        Debug.Log("Time jumped ahead by 25k years!!");
-        int currConstellation = ConstellationLoaderScript.currConstellation;
-        if(currConstellation == 0)
+        Debug.Log("Time ahead by 25k years!!");
+        int current_Const = Constellation_Loader.current_Const;
+        if(current_Const == 0)
         {
-            ConstellationLoaderScript.loadModernConstellation(true);
+            Constellation_Loader.loadModernConstellation(true);
         }
-        else if(currConstellation == 1)
+        else if(current_Const == 1)
         {
-            ConstellationLoaderScript.loadGreekConstellation(true);
+            Constellation_Loader.loadGreekConstellation(true);
         }
-        else if( currConstellation == 2)
+        else if( current_Const == 2)
         {
-            ConstellationLoaderScript.loadChineseConstellation(true);
+            Constellation_Loader.loadChineseConstellation(true);
         }
-        else if( currConstellation == 3)
+        else if( current_Const == 3)
         {
-            ConstellationLoaderScript.loadIndianConstellation(true);
+            Constellation_Loader.loadIndianConstellation(true);
         }
-        else if( currConstellation == 4)
+        else if( current_Const == 4)
         {
-            ConstellationLoaderScript.loadEgyptConstellation(true);
+            Constellation_Loader.loadEgyptConstellation(true);
         }
-        else if( currConstellation == 5)
+        else if( current_Const == 5)
         {
-            ConstellationLoaderScript.loadNoConstellation(true);
+            Constellation_Loader.loadNoConstellation(true);
         }
 
     }
@@ -139,7 +138,7 @@ public class starMover : MonoBehaviour
     public void StartFunction()
     {
         // Start the coroutine and store a reference to it
-        coroutine = StartCoroutine(CallFunctionRepeatedly());
+        coroutine = StartCoroutine(InfiniteLoopFunction());
     }
 
     public void StopFunction()
@@ -152,40 +151,37 @@ public class starMover : MonoBehaviour
 
     }
 
-    IEnumerator CallFunctionRepeatedly()
+    IEnumerator InfiniteLoopFunction()
     {
-        // Infinite loop to repeatedly call the function
+        // call the Infinite function
         while (true)
         {
-            // Call your function here
-            forward_10_years();
-
-            // Wait for 200 milliseconds before the next iteration
+            forward10K_years();
             yield return new WaitForSeconds(0.2f);
         }
     }
-    public void reset()
+    public void resetBlocks()
     {
         time_elapsed = 0;
         current_scale = 1;
         player.transform.position = new Vector3(0f, -1.5f, 0.5f);
         player.transform.rotation = Quaternion.Euler(0f, -180f, 0f);
 
-        CSVLoaderScript.new_reset();
+        csv_Loader.Block_Clear();
 
 
-        int currConstellation = ConstellationLoaderScript.currConstellation;
-        if (currConstellation == 0)
+        int current_Const = Constellation_Loader.current_Const;
+        if (current_Const == 0)
         {
-            ConstellationLoaderScript.loadModernConstellation(true);
+            Constellation_Loader.loadModernConstellation(true);
         }
-        else if (currConstellation == 1)
+        else if (current_Const == 1)
         {
-            ConstellationLoaderScript.loadGreekConstellation(true);
+            Constellation_Loader.loadGreekConstellation(true);
         }
-        else if (currConstellation == 2)
+        else if (current_Const == 2)
         {
-            ConstellationLoaderScript.loadChineseConstellation(true);
+            Constellation_Loader.loadChineseConstellation(true);
         }
 
     }
@@ -196,16 +192,16 @@ public class starMover : MonoBehaviour
         time_elapsed = 0;
         current_scale = 1;
         starObjects = new List<GameObject>();
-        CSVLoaderScript = CSVReaderObj.GetComponent<CSV_Loader>();
-        if (CSVLoaderScript.starDictionary == null)
+        csv_Loader = CSVReaderObj.GetComponent<CSV_Loader>();
+        if (csv_Loader.StarsDict == null)
         {
-            Debug.LogError("CSVLoaderScript is null!");
+            Debug.LogError("csv_Loader not found");
         }
         else
         {
-            mstarDictionary = CSVLoaderScript.starDictionary;
+            mStarsDict = csv_Loader.StarsDict;
         }
 
-        ConstellationLoaderScript = ConstellationLoaderObj.GetComponent<ConstellationLoader>();
+        Constellation_Loader = Constellation_Loader_obj.GetComponent<ConstellationLoader>();
     }
 }

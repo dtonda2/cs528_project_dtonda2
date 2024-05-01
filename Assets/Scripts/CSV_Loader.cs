@@ -10,7 +10,7 @@ using UnityEngine.Profiling.Memory.Experimental;
 public class OctreeBlock
 {
     public Vector3Int block_position;
-    public List<GameObject> stars_in_block = new List<GameObject>();
+    public List<GameObject> starsBlocks = new List<GameObject>();
 }
 public struct Point3D
 {
@@ -25,222 +25,190 @@ public struct Point3D
 }
 public class CSV_Loader : MonoBehaviour
 {
-    public GameObject O_prefab;
-    public GameObject B_prefab;
-    public GameObject A_prefab;
-    public GameObject F_prefab;
-    public GameObject G_prefab;
-    public GameObject K_prefab;
-    public GameObject M_prefab;
-    int star_counter = 0;
+    public GameObject Star_A, Star_B, Star_F, Star_G, Star_K, Star_M, Star_O;
+    int StarsCount = 0;
 
-    public Dictionary<int, GameObject> starDictionary;
-    public Dictionary<int, GameObject> allStarDictionary;
-    public Dictionary<float, float> hip_exo_Dictionary;
-    public Dictionary<Vector3Int, OctreeBlock> octreeBlocks;
+    public Dictionary<int, GameObject> StarsDict;
+    public Dictionary<int, GameObject> allStarsDict;
+    public Dictionary<float, float> hip_exo_Dict;
+    public Dictionary<Vector3Int, OctreeBlock> octree_Blocks;
 
 
     ConstellationLoader ConstellationLoaderScript;
     public GameObject ConstellationLoaderObj;
 
-    List<GameObject> starObjects;
-    List<GameObject> allstarObjects;
-    List<Point3D> allstarMetaData;
+    List<GameObject> StarsP;
+    List<GameObject> allStarsP;
+    List<Point3D> allStarsData;
 
-    void spawnStar(char spect,Vector3 cubePosition, Vector3 cubeVelocity,int star_hip_id, int planet_count, int star_id)
+    void spawnStar(char spect,Vector3 Cube_Pos, Vector3 cubeVelocity,int star_hip_id, int planet_count, int star_id)
     {
-        
-        GameObject spawnedStar = null;
+        GameObject Spw_Star = null;
         switch (spect)
         {
-            case 'O':
-                spawnedStar  = Instantiate(O_prefab, cubePosition, Quaternion.identity);
-
-                break;
-
-            case 'B':
-                spawnedStar = Instantiate(B_prefab, cubePosition, Quaternion.identity);
-                break;
-
             case 'A':
-                spawnedStar = Instantiate(A_prefab, cubePosition, Quaternion.identity);
+                Spw_Star = Instantiate(Star_A, Cube_Pos, Quaternion.identity);
+                break;
+            
+            case 'B':
+                Spw_Star = Instantiate(Star_B, Cube_Pos, Quaternion.identity);
                 break;
 
             case 'F':
-                spawnedStar = Instantiate(F_prefab, cubePosition, Quaternion.identity);
+                Spw_Star = Instantiate(Star_F, Cube_Pos, Quaternion.identity);
                 break;
 
             case 'G':
-                spawnedStar = Instantiate(G_prefab, cubePosition, Quaternion.identity);
+                Spw_Star = Instantiate(Star_G, Cube_Pos, Quaternion.identity);
                 break;
 
             case 'K':
-                spawnedStar = Instantiate(K_prefab, cubePosition, Quaternion.identity);
+                Spw_Star = Instantiate(Star_K, Cube_Pos, Quaternion.identity);
                 break;
 
             case 'M':
-                spawnedStar = Instantiate(M_prefab, cubePosition, Quaternion.identity);
+                Spw_Star = Instantiate(Star_M, Cube_Pos, Quaternion.identity);
+                break;
+
+            case 'O':
+                Spw_Star  = Instantiate(Star_O, Cube_Pos, Quaternion.identity);
                 break;
 
             default:
-                Debug.Log("Value not set");
+                Debug.Log("Value of spawned star is not set");
                 break;
         }
 
         
         
-        if (!allStarDictionary.ContainsKey(star_id))
+        if (!allStarsDict.ContainsKey(star_id))
         {
             
-            allStarDictionary.Add(star_id, spawnedStar);
+            allStarsDict.Add(star_id, Spw_Star);
         }
 
-        if (!starDictionary.ContainsKey(star_hip_id))
+        if (!StarsDict.ContainsKey(star_hip_id))
         {
            
-            starDictionary.Add(star_hip_id, spawnedStar);
+            StarsDict.Add(star_hip_id, Spw_Star);
         }
-        allstarObjects.Add(spawnedStar);
-        allstarMetaData.Add(new Point3D(cubePosition, cubeVelocity));
-        starMetaData starScript = spawnedStar.GetComponent<starMetaData>();
+        allStarsP.Add(Spw_Star);
+        allStarsData.Add(new Point3D(Cube_Pos, cubeVelocity));
+        Star_Data starScript = Spw_Star.GetComponent<Star_Data>();
 
         if (starScript != null)
         {
             
             starScript.hip_id = star_hip_id;
-            starScript.init_pos = cubePosition;
-            starScript.curr_pos = cubePosition;
+            starScript.init_pos = Cube_Pos;
+            starScript.curr_pos = Cube_Pos;
             starScript.init_vel = cubeVelocity;
             starScript.planet_count = planet_count;
             starScript.spectrum = spect;
         }
 
-        if (spawnedStar != null)
+        if (Spw_Star != null)
         {
-            Vector3 starPosition = spawnedStar.transform.position;
-            Vector3Int blockPosition = new Vector3Int(
+            Vector3 starPosition = Spw_Star.transform.position;
+            Vector3Int block_Pos = new Vector3Int(
                 Mathf.FloorToInt(starPosition.x / 20) * 20,
                 Mathf.FloorToInt(starPosition.y / 20) * 20,
                 Mathf.FloorToInt(starPosition.z / 20) * 20
             );
 
             // Create octree block if it doesn't exist
-            if (!octreeBlocks.ContainsKey(blockPosition))
+            if (!octree_Blocks.ContainsKey(block_Pos))
             {
-                octreeBlocks[blockPosition] = new OctreeBlock { block_position = blockPosition };
+                octree_Blocks[block_Pos] = new OctreeBlock { block_position = block_Pos };
             }
 
-            // Add star to the corresponding octree block
-            octreeBlocks[blockPosition].stars_in_block.Add(spawnedStar);
-
-            /*
-            // Disable the renderer
-            Renderer objectRenderer = spawnedStar.GetComponent<Renderer>();
-            if (objectRenderer != null)
-            {
-                objectRenderer.enabled = false;
-            }
-            */
-
-            spawnedStar.SetActive(false);
+            // Add star to octree block
+            octree_Blocks[block_Pos].starsBlocks.Add(Spw_Star);
+            Spw_Star.SetActive(false);
         }
-        
-        
     }
-    // Start is called before the first frame update
+    
     void Start()
     {
-        starDictionary = new Dictionary<int, GameObject>();
-        allStarDictionary = new Dictionary<int, GameObject>();
-        allstarObjects = new List<GameObject>();
-        allstarMetaData = new List<Point3D>();
-        octreeBlocks = new Dictionary<Vector3Int, OctreeBlock>();
-        hip_exo_Dictionary = new Dictionary<float, float>();
-        starObjects = new List<GameObject>();
+        StarsDict = new Dictionary<int, GameObject>();
+        allStarsDict = new Dictionary<int, GameObject>();
+        allStarsP = new List<GameObject>();
+        allStarsData = new List<Point3D>();
+        octree_Blocks = new Dictionary<Vector3Int, OctreeBlock>();
+        hip_exo_Dict = new Dictionary<float, float>();
+        StarsP = new List<GameObject>();
         StartCoroutine(LoadCSVFile());
     }
 
     IEnumerator LoadCSVFile()
     {
-        // Specify the path to your CSV file
+        //path of CSV file
         string csvFileName = "shiningstar_dataset.csv";
         string csvPath = Path.Combine(Application.streamingAssetsPath, csvFileName);
         CultureInfo culture = new CultureInfo("en-US");
-        // If loading from Resources folder, modify the path
-        // string csvPath = "Assets/Resources/cleaned_data.csv";
 
-        // Check if the file exists
+        // Check if file exists
         if (File.Exists(csvPath))
         {
-            // Open a StreamReader to read the CSV file
-            using (StreamReader reader = new StreamReader(csvPath))
+            //read the CSV file
+            using (StreamReader streamreader = new StreamReader(csvPath))
             {
-                while (!reader.EndOfStream)
+                while (!streamreader.EndOfStream)
                 {
-                    string line = reader.ReadLine();
+                    string line = streamreader.ReadLine();
                     
                     string[] values = line.Split(',');
 
                     float x0, y0, z0, v_x0, v_y0, v_z0, hip_id, planets_count,star_id;
 
-                    if (float.TryParse(values[3], NumberStyles.Float, culture, out x0) &&
-                        float.TryParse(values[4], NumberStyles.Float, culture, out y0) &&
-                        float.TryParse(values[5], NumberStyles.Float, culture, out z0) &&
-                        float.TryParse(values[8], NumberStyles.Float, culture, out v_x0) &&
-                        float.TryParse(values[9], NumberStyles.Float, culture, out v_y0) &&
-                        float.TryParse(values[10], NumberStyles.Float, culture, out v_z0) &&
-                        float.TryParse(values[0], NumberStyles.Float, culture, out star_id) &&
-                        float.TryParse(values[1], NumberStyles.Float, culture, out hip_id) &&
+                    if (float.TryParse(values[3], NumberStyles.Float, culture, out x0) && float.TryParse(values[4], NumberStyles.Float, culture, out y0) &&
+                        float.TryParse(values[5], NumberStyles.Float, culture, out z0) && float.TryParse(values[8], NumberStyles.Float, culture, out v_x0) &&
+                        float.TryParse(values[9], NumberStyles.Float, culture, out v_y0) && float.TryParse(values[10], NumberStyles.Float, culture, out v_z0) &&
+                        float.TryParse(values[0], NumberStyles.Float, culture, out star_id) && float.TryParse(values[1], NumberStyles.Float, culture, out hip_id) &&
                         float.TryParse(values[12], NumberStyles.Float, culture, out planets_count)
                        )
                     {
-                        Vector3 cubePosition = new Vector3(x0, z0, y0);
+                        Vector3 Cube_Pos = new Vector3(x0, z0, y0);
                         Vector3 cubeVelocity = new Vector3(v_x0, v_y0, v_z0);
-                        spawnStar(values[11][0], cubePosition, cubeVelocity, (int)hip_id, (int)planets_count,(int)star_id);
-                        star_counter  = star_counter+1;
+                        spawnStar(values[11][0], Cube_Pos, cubeVelocity, (int)hip_id, (int)planets_count,(int)star_id);
+                        StarsCount = StarsCount + 1;
                     }
                     else
                     {
-                        Debug.LogError("Failed to parse float values for x0, y0, z0.");
+                        Debug.LogError("Failed to parse, x0, y0, z0.");
                     }
                 }
             }
         }
         else
         {
-            Debug.LogError($"CSV file not found at path: {csvPath}");
+            Debug.LogError("CSV file not found");
         }
-        //loadConstellation();
-        //load the exoplnets count file 
 
 
-        // Specify the path to your CSV file
+        // Specify CSV file path
         string csvExoFileName = "processed_exoplanets.csv";
         string csvExoPath = Path.Combine(Application.streamingAssetsPath, csvExoFileName);
 
         // Check if the file exists
         if (File.Exists(csvExoPath))
         {
-            // Open a StreamReader to read the CSV file
-            using (StreamReader reader = new StreamReader(csvExoPath))
+            // Read CSV file
+            using (StreamReader streamreader = new StreamReader(csvExoPath))
             {
-                while (!reader.EndOfStream)
+                while (!streamreader.EndOfStream)
                 {
-                    string line = reader.ReadLine();
-
+                    string line = streamreader.ReadLine();
                    string[] values = line.Split(',');
-
                     float num_planets, hip_id;
-
                     if (float.TryParse(values[0], NumberStyles.Float, culture, out hip_id) &&
-                        float.TryParse(values[1], NumberStyles.Float, culture, out num_planets)
-                       )
+                        float.TryParse(values[1], NumberStyles.Float, culture, out num_planets))
                     {
-                        hip_exo_Dictionary.Add(hip_id, num_planets);
+                        hip_exo_Dict.Add(hip_id, num_planets);
                     }
                     else
                     {
-                        Debug.LogError("Failed to parse float values for hip id and num of planets");
+                        Debug.LogError("Failed to parse float values");
                     }
 
                 }
@@ -248,53 +216,52 @@ public class CSV_Loader : MonoBehaviour
         }
         else
         {
-            Debug.LogError($"CSV file not found at path: {csvPath}");
+            Debug.LogError("CSV file not found");
         }
 
 
-        int numberOfElements = octreeBlocks.Count;
+        int numberOfElements = octree_Blocks.Count;
 
         int totalStars = 0;
-        int totalBlocks = octreeBlocks.Count;
+        int totalBlocks = octree_Blocks.Count;
 
-        foreach (var block in octreeBlocks.Values)
+        foreach (var block in octree_Blocks.Values)
         {
-            totalStars += block.stars_in_block.Count;
+            totalStars += block.starsBlocks.Count;
         }
-
-        float averageStarsPerBlock = (float)totalStars / totalBlocks;
+        float avgStarsPerBlock = (float)totalStars / totalBlocks;
 
         yield return null;
 
     }
 
-    public void new_reset()
+    public void Block_Clear()
     {
-        octreeBlocks.Clear();
-        if (allstarObjects.Count == allstarMetaData.Count)
+        octree_Blocks.Clear();
+        if (allStarsP.Count == allStarsData.Count)
         {
-            for (int i = 0; i < allstarObjects.Count; i++)
+            for (int i = 0; i < allStarsP.Count; i++)
             {
-                GameObject star = allstarObjects[i];
-                Point3D metaData = allstarMetaData[i];
+                GameObject star = allStarsP[i];
+                Point3D metaData = allStarsData[i];
 
                 star.transform.position = metaData.init_position;
 
                 Vector3 starPosition = star.transform.position;
-                Vector3Int blockPosition = new Vector3Int(
+                Vector3Int block_Pos = new Vector3Int(
                     Mathf.FloorToInt(starPosition.x / 20) * 20,
                     Mathf.FloorToInt(starPosition.y / 20) * 20,
                     Mathf.FloorToInt(starPosition.z / 20) * 20
                 );
 
                 // Create octree block if it doesn't exist
-                if (!octreeBlocks.ContainsKey(blockPosition))
+                if (!octree_Blocks.ContainsKey(block_Pos))
                 {
-                    octreeBlocks[blockPosition] = new OctreeBlock { block_position = blockPosition };
+                    octree_Blocks[block_Pos] = new OctreeBlock { block_position = block_Pos };
                 }
 
                 // Add star to the corresponding octree block
-                octreeBlocks[blockPosition].stars_in_block.Add(star);
+                octree_Blocks[block_Pos].starsBlocks.Add(star);
             }
         }
         else
@@ -303,70 +270,70 @@ public class CSV_Loader : MonoBehaviour
         }
 
     }
-    public void new_scale_star_halve()
+    public void StarHalfScaler()
     {
-        octreeBlocks.Clear();
+        octree_Blocks.Clear();
 
-        foreach (GameObject star in allstarObjects)
+        foreach (GameObject star in allStarsP)
         {
             star.transform.position = star.transform.position / 2;
 
             Vector3 starPosition = star.transform.position;
-            Vector3Int blockPosition = new Vector3Int(
+            Vector3Int block_Pos = new Vector3Int(
                 Mathf.FloorToInt(starPosition.x / 20) * 20,
                 Mathf.FloorToInt(starPosition.y / 20) * 20,
                 Mathf.FloorToInt(starPosition.z / 20) * 20
             );
 
             // Create octree block if it doesn't exist
-            if (!octreeBlocks.ContainsKey(blockPosition))
+            if (!octree_Blocks.ContainsKey(block_Pos))
             {
-                octreeBlocks[blockPosition] = new OctreeBlock { block_position = blockPosition };
+                octree_Blocks[block_Pos] = new OctreeBlock { block_position = block_Pos };
             }
 
             // Add star to the corresponding octree block
-            octreeBlocks[blockPosition].stars_in_block.Add(star);
+            octree_Blocks[block_Pos].starsBlocks.Add(star);
         }
 
     }
 
-    public void new_scale_star_double()
+    public void StarDoubleScaler()
     {
-        octreeBlocks.Clear();
+        octree_Blocks.Clear();
 
-        foreach (GameObject star in allstarObjects)
+        foreach (GameObject star in allStarsP)
         {
             star.transform.position = star.transform.position*2;
 
             Vector3 starPosition = star.transform.position;
-            Vector3Int blockPosition = new Vector3Int(
+            Vector3Int block_Pos = new Vector3Int(
                 Mathf.FloorToInt(starPosition.x / 20) * 20,
                 Mathf.FloorToInt(starPosition.y / 20) * 20,
                 Mathf.FloorToInt(starPosition.z / 20) * 20
             );
 
             // Create octree block if it doesn't exist
-            if (!octreeBlocks.ContainsKey(blockPosition))
+            if (!octree_Blocks.ContainsKey(block_Pos))
             {
-                octreeBlocks[blockPosition] = new OctreeBlock { block_position = blockPosition };
+                octree_Blocks[block_Pos] = new OctreeBlock { block_position = block_Pos };
             }
 
             // Add star to the corresponding octree block
-            octreeBlocks[blockPosition].stars_in_block.Add(star);
+            octree_Blocks[block_Pos].starsBlocks.Add(star);
         }
 
     }
 
 
-    public void jump_10k_years(int rev_time)
+    public void ForwardYears_10K(int rev_time)
     {
         
-        if (allstarObjects.Count == allstarMetaData.Count)
+        if (allStarsP.Count == allStarsData.Count)
         {
-            for (int i = 0; i < allstarObjects.Count; i++)
+            for (int i = 0; i < allStarsP.Count; i++)
             {
-                GameObject star = allstarObjects[i];
-                Point3D metaData = allstarMetaData[i];
+                GameObject star = allStarsP[i];
+                Point3D metaData = allStarsData[i];
 
                 Vector3 displacement = metaData.init_velocity * 10000* rev_time;
                 star.transform.position+= displacement;
@@ -379,28 +346,28 @@ public class CSV_Loader : MonoBehaviour
         }
     }
 
-    public void stop_time()
+    public void Timer_Stop()
     {
-        octreeBlocks.Clear();
+        octree_Blocks.Clear();
 
-        if (allstarObjects.Count == allstarMetaData.Count)
-            foreach (GameObject star in allstarObjects)
+        if (allStarsP.Count == allStarsData.Count)
+            foreach (GameObject star in allStarsP)
             {
                 Vector3 starPosition = star.transform.position;
-                Vector3Int blockPosition = new Vector3Int(
+                Vector3Int block_Pos = new Vector3Int(
                     Mathf.FloorToInt(starPosition.x / 20) * 20,
                     Mathf.FloorToInt(starPosition.y / 20) * 20,
                     Mathf.FloorToInt(starPosition.z / 20) * 20
                 );
 
                 // Create octree block if it doesn't exist
-                if (!octreeBlocks.ContainsKey(blockPosition))
+                if (!octree_Blocks.ContainsKey(block_Pos))
                 {
-                    octreeBlocks[blockPosition] = new OctreeBlock { block_position = blockPosition };
+                    octree_Blocks[block_Pos] = new OctreeBlock { block_position = block_Pos };
                 }
 
-                // Add star to the corresponding octree block
-                octreeBlocks[blockPosition].stars_in_block.Add(star);
+                // Add star to octree block
+                octree_Blocks[block_Pos].starsBlocks.Add(star);
             }
     }
 
